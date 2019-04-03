@@ -1,8 +1,8 @@
 // Book Class : Represents a Book
     class Book {
-        constructor(title,autor,isbn) {
+        constructor(title,author,isbn) {
             this.title;
-            this.autor;
+            this.author;
             this.isbn;
         }
     }
@@ -13,16 +13,16 @@
             const StoredBook = [
                 {
                     title: 'Book One',
-                    autor: 'Delia Owens',
+                    author: 'Delia Owens',
                     isbn:'1234578'
                 },
                 {
                     title: 'Book One',
-                    autor: 'Eric Carle',
+                    author: 'Eric Carle',
                     isbn:'98765004'
                 },{
                     title: 'Book One',
-                    autor: 'Werner Sonne',
+                    author: 'Werner Sonne',
                     isbn:'1234321567'
                 }
             ];
@@ -38,7 +38,7 @@
 
             row.innerHTML = `
              <td>${book.title}</td>
-             <td>${book.autor}</td>
+             <td>${book.author}</td>
              <td>${book.isbn}</td>
              <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
             `;
@@ -51,5 +51,19 @@
 // Event: Display Books
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
 // Event: Add a Book
+document.querySelector('#book-form').addEventListener('submit',(e)=>
+{   
+    // Prevent submit
+    e.preventDefault();
 
+    // Get form values
+    const title = document.querySelector('#title').value;
+    const author = document.querySelector('#author').value;
+    const isbn = document.querySelector('#isbn').value;
+
+    //Instatiate book
+    const book = new Book(title, author, isbn);
+
+    console.log(book)
+});
 // Event: Remove A Book
