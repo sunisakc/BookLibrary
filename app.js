@@ -10,24 +10,7 @@
 // UI Class: Handle UI Tasks
     class UI {
         static displayBooks(){
-            const StoredBook =[
-                {
-                    title: 'Book One',
-                    author: 'Delia Owens',
-                    isbn:'1234578'
-                },
-                {
-                    title: 'Book One',
-                    author: 'Eric Carle',
-                    isbn:'98765004'
-                },
-                {
-                    title: 'Book One',
-                    author: 'Werner Sonne',
-                    isbn:'1234321567'
-                }
-            ];
-            const books = StoredBook;
+            const books = Store.getBooks();
 
             books.forEach((book) => UI.addBookToList(book));
         }
@@ -59,6 +42,8 @@
             const container = document.querySelector('.container');
             const form = document.querySelector('#book-form');
             container.insertBefore(div, form);
+            // Vanish in 3 seconds
+            setTimeout(() => document.querySelector('.alert').remove(), 3000);
         }
         static clearFields() {
             document.querySelector('#title').value = '';
@@ -68,6 +53,37 @@
          }
 
 // Store Class: Handles Storage
+class Store {
+    static getBooks() {
+      let books;
+      if(localStorage.getItem('books') === null) {
+        books = [];
+      } else {
+        books = JSON.parse(localStorage.getItem('books'));
+      }
+  
+      return books;
+    }
+  
+    static addBook(book) {
+      const books = Store.getBooks();
+      books.push(book);
+      localStorage.setItem('books', JSON.stringify(books));
+    }
+  
+    static removeBook(isbn) {
+      const books = Store.getBooks();
+  
+      books.forEach((book, index) => {
+        if(book.isbn === isbn) {
+          books.splice(index, 1);
+        }
+      });
+  
+      localStorage.setItem('books', JSON.stringify(books));
+    }
+  }
+  
 
 // Event: Display Books
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
@@ -90,6 +106,12 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
         // Add book to UI
         UI.addBookToList(book);
 
+        // Add Book to store
+        Store.addBook(book);
+
+        // Show success message
+        UI.showAlert('Book Added', 'success');
+
         //Method Clear fields
         UI.clearFields();
     }
@@ -99,5 +121,11 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 document.querySelector('#book-list').addEventListener('click', (e) => {
     // Remove book from UI
     UI.deleteBook(e.target);
+
+    // Remove book from store
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
+
+    // Show success deleted message
+    UI.showAlert('Book Deleted', 'success');
   
 });
